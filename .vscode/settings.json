@@ -1,0 +1,8 @@
+{
+  "editor.lineHeight": 1.8,
+  "prettier.experimentalTernaries": true,
+  "prettier.singleQuote": true,
+  "prettier.tabWidth": 4,
+  "prettier.singleAttributePerLine": true,
+  "vs-code-prettier-eslint.prettierLast": true
+}
