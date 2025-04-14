@@ -81,11 +81,6 @@ h6 {
   isolation: isolate;
 }
 
-/* Mobile layout */
-* {
-  /* border: 1px solid red; */
-}
-
 html {
   height: 100vh;
 }
