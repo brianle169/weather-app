@@ -13,7 +13,8 @@ async function fetchWeatherData(loc) {
     );
     weatherData = await response.json();
   } catch (error) {
-    throw new Error(`Failed to fetch weather data: ${error}`);
+    console.error("Error fetching weather data:", error);
+    throw new Error();
   }
   return weatherData;
 }

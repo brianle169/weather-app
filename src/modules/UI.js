@@ -1,5 +1,8 @@
 // UI module: control the DOM, update and assign event listeners
 import extractWeatherData from "./DataFunctions";
+import UnitConversion from "./UnitConversion";
+
+const Unit = UnitConversion();
 
 function createWeatherInfoPanel() {
   const infoPanel = document.createElement("div");
@@ -41,11 +44,26 @@ function createInputField() {
     const locationInput = document.getElementById("location");
     console.log(locationInput.value);
     renderWeatherInfo(locationInput.value);
+    // invoke loading animation
   });
 
   form.append(inputField, submitButton);
 
   return form;
+}
+
+function createUnitToggle() {
+  const unitToggleButton = document.createElement("button");
+  unitToggleButton.classList.add("unit-toggle");
+  unitToggleButton.innerText = "°F/°C";
+  unitToggleButton.addEventListener("click", (event) => {
+    event.preventDefault();
+    Unit.toggleUnit();
+    console.log(Unit.isFarenheit());
+    renderWeatherInfo(document.getElementById("location").value);
+  });
+
+  return unitToggleButton;
 }
 
 function renderWeatherInfo(location) {
@@ -60,14 +78,14 @@ function renderWeatherInfo(location) {
     loc.textContent = data.location;
     icon.src = `https://basmilius.github.io/weather-icons/production/fill/all/${data.currentConditions.icon}.svg`;
     icon.alt = data.currentConditions.conditions;
-    temp.textContent = `${data.currentConditions.temp} °F`;
+    temp.textContent = `${Unit.isFarenheit() ? data.currentConditions.temp : Unit.toCelsius(data.currentConditions.temp)} °${Unit.isFarenheit() ? "F" : "C"}`;
     cond.textContent = data.currentConditions.conditions;
-    feelslike.textContent = `Feels like: ${data.currentConditions.feelslike} °F`;
+    feelslike.textContent = `Feels like: ${Unit.isFarenheit() ? data.currentConditions.feelslike : Unit.toCelsius(data.currentConditions.feelslike)} °${Unit.isFarenheit() ? "F" : "C"}`;
     desc.textContent = `${data.currentConditions.description}`;
   });
 }
 
 export default function renderPage() {
   const body = document.querySelector("body");
-  body.append(createInputField(), createWeatherInfoPanel());
+  body.append(createInputField(), createWeatherInfoPanel(), createUnitToggle());
 }
