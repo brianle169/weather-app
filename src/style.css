@@ -104,6 +104,11 @@ body {
     top: 10px;
     right: 10px;
   }
+
+  .error-message {
+    color: #ffffff;
+    margin-bottom: 20px;
+  }
 }
 
 .info-panel {

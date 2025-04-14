@@ -13,15 +13,18 @@ async function fetchWeatherData(loc) {
     );
     weatherData = await response.json();
   } catch (error) {
-    console.error("Error fetching weather data:", error);
-    throw new Error();
+    throw new Error(error);
   }
   return weatherData;
 }
 
 export default async function extractWeatherData(location) {
-  const data = await fetchWeatherData(location);
-  console.log(data);
+  let data;
+  try {
+    data = await fetchWeatherData(location);
+  } catch (error) {
+    throw new Error(error);
+  }
   return {
     location: data.resolvedAddress,
     currentConditions: {

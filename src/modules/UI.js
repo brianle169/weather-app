@@ -39,10 +39,9 @@ function createInputField() {
   const submitButton = document.createElement("button");
   submitButton.type = "submit";
   submitButton.innerText = "Search";
-  submitButton.addEventListener("click", (event) => {
+  form.addEventListener("submit", (event) => {
     event.preventDefault();
     const locationInput = document.getElementById("location");
-    console.log(locationInput.value);
     renderWeatherInfo(locationInput.value);
     // invoke loading animation
   });
@@ -59,11 +58,16 @@ function createUnitToggle() {
   unitToggleButton.addEventListener("click", (event) => {
     event.preventDefault();
     Unit.toggleUnit();
-    console.log(Unit.isFarenheit());
     renderWeatherInfo(document.getElementById("location").value);
   });
 
   return unitToggleButton;
+}
+
+function createErrorMessage() {
+  const errorMessage = document.createElement("p");
+  errorMessage.classList.add("error-message");
+  return errorMessage;
 }
 
 function renderWeatherInfo(location) {
@@ -74,18 +78,29 @@ function renderWeatherInfo(location) {
   const feelslike = document.querySelector(".feels-like");
   const desc = document.querySelector(".description");
 
-  extractWeatherData(location).then((data) => {
-    loc.textContent = data.location;
-    icon.src = `https://basmilius.github.io/weather-icons/production/fill/all/${data.currentConditions.icon}.svg`;
-    icon.alt = data.currentConditions.conditions;
-    temp.textContent = `${Unit.isFarenheit() ? data.currentConditions.temp : Unit.toCelsius(data.currentConditions.temp)} °${Unit.isFarenheit() ? "F" : "C"}`;
-    cond.textContent = data.currentConditions.conditions;
-    feelslike.textContent = `Feels like: ${Unit.isFarenheit() ? data.currentConditions.feelslike : Unit.toCelsius(data.currentConditions.feelslike)} °${Unit.isFarenheit() ? "F" : "C"}`;
-    desc.textContent = `${data.currentConditions.description}`;
-  });
+  extractWeatherData(location)
+    .then((data) => {
+      document.querySelector(".error-message").textContent = "";
+      loc.textContent = data.location;
+      icon.src = `https://basmilius.github.io/weather-icons/production/fill/all/${data.currentConditions.icon}.svg`;
+      icon.alt = data.currentConditions.conditions;
+      temp.textContent = `${Unit.isFarenheit() ? data.currentConditions.temp : Unit.toCelsius(data.currentConditions.temp)} °${Unit.isFarenheit() ? "F" : "C"}`;
+      cond.textContent = data.currentConditions.conditions;
+      feelslike.textContent = `Feels like: ${Unit.isFarenheit() ? data.currentConditions.feelslike : Unit.toCelsius(data.currentConditions.feelslike)} °${Unit.isFarenheit() ? "F" : "C"}`;
+      desc.textContent = `${data.currentConditions.description}`;
+    })
+    .catch(() => {
+      document.querySelector(".error-message").textContent =
+        `Please try entering the location again. Language accents may help with searching.`;
+    });
 }
 
 export default function renderPage() {
   const body = document.querySelector("body");
-  body.append(createInputField(), createWeatherInfoPanel(), createUnitToggle());
+  body.append(
+    createErrorMessage(),
+    createInputField(),
+    createWeatherInfoPanel(),
+    createUnitToggle(),
+  );
 }
